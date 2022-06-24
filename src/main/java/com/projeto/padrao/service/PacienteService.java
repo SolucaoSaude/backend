@@ -4,7 +4,9 @@ import com.projeto.padrao.dto.PacienteDTO;
 import com.projeto.padrao.dto.PageDTO;
 import com.projeto.padrao.enums.EnumAtivoInativo;
 import com.projeto.padrao.exceptions.DefaultExceptionHandler;
+import com.projeto.padrao.model.Logado;
 import com.projeto.padrao.model.Paciente;
+import com.projeto.padrao.repository.LogadoRepository;
 import com.projeto.padrao.repository.PacienteRepository;
 import com.projeto.padrao.utils.CpfCnpjUtil;
 import com.projeto.padrao.utils.NumberUtil;
@@ -29,6 +31,9 @@ public class PacienteService extends BaseService {
 
     @Autowired
     private PacienteRepository pacienteRepository;
+    @Autowired
+    private LogadoRepository logadoRepository;
+
 
     public Optional<Paciente> consultarPorCpfCartaoSus(final String cpf, final String cartaoSus) {
         return this.pacienteRepository.findByCpfAndCartaoSus(NumberUtil.toNumber(cpf), NumberUtil.toNumber(cartaoSus));
@@ -37,6 +42,12 @@ public class PacienteService extends BaseService {
     public Paciente consultarPorEmailSenha(final String email, final String senha) {
         return this.pacienteRepository.findByEmailAndSenha(email, senha);
     }
+
+//    public void saveIdLogado(Integer idLogado) {
+//        Integer idSave = new Logado();
+//        idSave = idLogado;
+//        this.logadoRepository.save(idSave);
+//    }
 
     @Transactional(rollbackFor = DefaultExceptionHandler.class)
     public Paciente cadastrar(PacienteDTO pacienteDTO) throws DefaultExceptionHandler {
@@ -52,7 +63,7 @@ public class PacienteService extends BaseService {
                 pacienteDTO.setTelefone(pacienteDTO.getTelefone().replaceAll("\\D", ""));
                 pacienteDTO.setDataNascimento(pacienteDTO.getDataNascimento());
 //                pacienteDTO.setDataNascimento(DateTimeUtils.formataData(pacienteDTO.getDataNascimentoFormatada(),"yyyy-MM-dd"));
-                pacienteDTO.setGenero(pacienteDTO.getGenero());
+                pacienteDTO.setGenero(pacienteDTO.getGenero().substring(0,1));
 
                 pacienteDTO.setUsername(pacienteDTO.getUsername());
                 pacienteDTO.setEmail(pacienteDTO.getEmail());

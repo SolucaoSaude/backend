@@ -48,4 +48,8 @@ public class Paciente extends BaseEntity {
     @Column(name = "ativo_inativo", length = 1) // ENUM para ativoInativo
     private String ativoInativo;
 
+//    @OneToOne(cascade=CascadeType.ALL)
+//    @JoinColumn(name = "logado_id")
+//    private Logado logado;
+
 }

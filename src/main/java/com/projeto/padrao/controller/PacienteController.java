@@ -3,7 +3,11 @@ package com.projeto.padrao.controller;
 import com.projeto.padrao.dto.PacienteDTO;
 import com.projeto.padrao.dto.PageDTO;
 import com.projeto.padrao.exceptions.DefaultExceptionHandler;
+import com.projeto.padrao.model.Logado;
 import com.projeto.padrao.model.Paciente;
+import com.projeto.padrao.repository.LogadoRepository;
+import com.projeto.padrao.repository.PacienteRepository;
+import com.projeto.padrao.service.LogadoService;
 import com.projeto.padrao.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,12 @@ public class PacienteController extends BaseController {
 
     @Autowired
     PacienteService pacienteService;
+
+    @Autowired
+    PacienteRepository pacienteRepository;
+
+    @Autowired
+    LogadoService logadoService;
 
     @PostMapping("/cadastrar")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -84,6 +94,10 @@ public class PacienteController extends BaseController {
 
         if (tempEmail != null && tempSenha != null) {
             paciente = pacienteService.consultarPorEmailSenha(tempEmail, tempSenha);
+            paciente.getId();
+
+            Integer logadoId = paciente.getId();
+            this.logadoService.cadastrar(logadoId);
 
             if (ObjectUtils.isEmpty(paciente)) {
                 throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
