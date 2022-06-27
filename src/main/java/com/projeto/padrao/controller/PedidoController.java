@@ -44,4 +44,12 @@ public class PedidoController extends BaseController {
     public void deletarPorId(@Valid @PathVariable("id") Integer id) throws DefaultExceptionHandler {
         this.pedidoService.deletarPorId(id);
     }
+    
+    @PutMapping("/agendar")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<PedidoDTO> agendar(@Valid @RequestBody PedidoDTO pedidoDTO) throws DefaultExceptionHandler {
+        Pedido pedido = this.pedidoService.cadastrar(pedidoDTO);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId()).toUri();
+        return ResponseEntity.created(location).body(super.convertTo(pedido, PedidoDTO.class));
+    }
 }

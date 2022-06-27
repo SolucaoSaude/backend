@@ -18,6 +18,7 @@ public class PedidoDTO {
     private String statusPedido;
     private String tipoConsulta;
     private Date dataPedido;
+    private Date dataConsulta;
 
     private PacienteDTO pacienteDTO;
 

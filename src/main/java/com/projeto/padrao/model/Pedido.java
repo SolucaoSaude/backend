@@ -31,6 +31,9 @@ public class Pedido extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_pedido")
     private Date dataPedido;
+    @Column(name = "data_consulta")
+    private Date dataConsulta;
+    
 
     @ManyToOne
     @JoinColumn(name = "paciente_id")
