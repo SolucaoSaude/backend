@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @Controller
 @RequestMapping("/api/paciente")
 public class PacienteController extends BaseController {

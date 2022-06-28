@@ -63,7 +63,7 @@ public class PacienteService extends BaseService {
                 pacienteDTO.setTelefone(pacienteDTO.getTelefone().replaceAll("\\D", ""));
                 pacienteDTO.setDataNascimento(pacienteDTO.getDataNascimento());
 //                pacienteDTO.setDataNascimento(DateTimeUtils.formataData(pacienteDTO.getDataNascimentoFormatada(),"yyyy-MM-dd"));
-                pacienteDTO.setGenero(pacienteDTO.getGenero().substring(0,1));
+                pacienteDTO.setGenero(pacienteDTO.getGenero().substring(0,1).toUpperCase());
 
                 pacienteDTO.setUsername(pacienteDTO.getUsername());
                 pacienteDTO.setEmail(pacienteDTO.getEmail());

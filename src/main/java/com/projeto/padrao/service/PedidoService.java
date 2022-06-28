@@ -4,7 +4,9 @@ import com.projeto.padrao.dto.PedidoDTO;
 import com.projeto.padrao.enums.EnumStatusPedido;
 import com.projeto.padrao.enums.EnumTipoConsulta;
 import com.projeto.padrao.exceptions.DefaultExceptionHandler;
+import com.projeto.padrao.model.Paciente;
 import com.projeto.padrao.model.Pedido;
+import com.projeto.padrao.repository.PacienteRepository;
 import com.projeto.padrao.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PedidoService extends BaseService {
@@ -23,7 +26,7 @@ public class PedidoService extends BaseService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private PacienteService pacienteService;
+    private PacienteRepository pacienteRepository;
 
     @Transactional(rollbackFor = DefaultExceptionHandler.class)
     public Pedido cadastrar(PedidoDTO pedidoDTO) throws DefaultExceptionHandler {
@@ -33,15 +36,15 @@ public class PedidoService extends BaseService {
         }
         this.validarPedido(pedidoDTO);
         try {
-//            Paciente paciente = pacienteRepository.findById(pedidoDTO.getPaciente().getId()).get();
-//            if (paciente == null) {
-//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-//                        "Operação inválida. O id do paciente informado não existe.");
-//            }
-//            if (paciente.getAtivoInativo() == "I" || paciente.getAtivoInativo() == null) {
-//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-//                        "Operação inválida. O paciente INATIVO não pode marcar consulta.");
-//            }
+            Paciente paciente = pacienteRepository.findById(pedidoDTO.getPacienteDTO().getId()).get();
+            if (paciente == null) {
+                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
+                        "Operação inválida. O id do paciente informado não existe.");
+            }
+            if (paciente.getAtivoInativo() == "I" || paciente.getAtivoInativo() == null) {
+                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
+                        "Operação inválida. O paciente INATIVO não pode marcar consulta.");
+            }
             pedidoDTO.setId(null);
             pedidoDTO.getPostoSaude();
             if (StringUtils.isEmpty(pedidoDTO.getStatusPedido())) {
@@ -58,7 +61,7 @@ public class PedidoService extends BaseService {
                 pedidoDTO.setDataPedido(new Date());
             }
             Pedido pedido = convertToModel(pedidoDTO, Pedido.class);
-//            pedido.setPaciente(paciente);
+            pedido.setPaciente(paciente);
 
             return this.pedidoRepository.save(pedido);
         } catch (Exception e) {
@@ -74,28 +77,25 @@ public class PedidoService extends BaseService {
         }
         this.validarPedido(pedidoDTO);
         try {
-            Paciente paciente = pacienteRepository.findById(pedidoDTO.getPaciente().getId()).get();
-            if (paciente == null) {
-                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-                        "Operação inválida. O id do paciente informado não existe.");
-            }
-            if (paciente.getAtivoInativo() == "I" || paciente.getAtivoInativo() == null) {
-                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-                        "Operação inválida. O paciente INATIVO não pode marcar consulta.");
-            }
+//            Paciente paciente = pacienteRepository.findById(pedidoDTO.getPaciente().getId()).get();
+//            if (paciente == null) {
+//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
+//                        "Operação inválida. O id do paciente informado não existe.");
+//            }
+//            if (paciente.getAtivoInativo() == "I" || paciente.getAtivoInativo() == null) {
+//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
+//                        "Operação inválida. O paciente INATIVO não pode marcar consulta.");
+//            }
             pedidoDTO.getPostoSaude();
             pedidoDTO.setStatusPedido(EnumStatusPedido.MARCADA.getCodigo());
- 
-            if (StringUtils.isEmpty(pedidoDTO.getTipoConsulta())) {
-                pedidoDTO.setTipoConsulta(EnumTipoConsulta.GERAL.getCodigo());
-            } else {
-                pedidoDTO.setTipoConsulta(pedidoDTO.getTipoConsulta());
-            }
-            if (StringUtils.isEmpty(pedidoDTO.getDataConsulta())) {
-                pedidoDTO.setDataPedido(new Date());
-            }
+            pedidoDTO.setDataPedido(pedidoDTO.getDataConsulta());
+//            if (StringUtils.isEmpty(pedidoDTO.getTipoConsulta())) {
+//                pedidoDTO.setTipoConsulta(EnumTipoConsulta.GERAL.getCodigo());
+//            } else {
+//                pedidoDTO.setTipoConsulta(pedidoDTO.getTipoConsulta());
+//            }
             Pedido pedido = convertToModel(pedidoDTO, Pedido.class);
-            pedido.setPaciente(paciente);
+//            pedido.setPaciente(paciente);
 
             return this.pedidoRepository.save(pedido);
         } catch (Exception e) {
@@ -127,6 +127,18 @@ public class PedidoService extends BaseService {
         }
     }
 
+    public Optional<Pedido> listarPorId(final Integer id) throws DefaultExceptionHandler {
+        if (ObjectUtils.isEmpty(id)) {
+            throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(), "Operação inválida! O campo 'ID' é obrigatório.");
+        }
+        Optional<Pedido> pedidoList = pedidoRepository.findById(id);
+        try {
+            return pedidoList;
+        } catch (Exception e) {
+            throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(), "Operação inválida! Erro leitura paciente.");
+        }
+    }
+
     @Transactional(rollbackFor = DefaultExceptionHandler.class)
     public void deletarPorId(final Integer id) throws DefaultExceptionHandler {
         if (ObjectUtils.isEmpty(id)) {
@@ -139,9 +151,6 @@ public class PedidoService extends BaseService {
             Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(
                     () -> new DefaultExceptionHandler(HttpStatus.NOT_FOUND.value(), "Nenhuma informação encontrada para os parâmetros informados.")
             );
-            // inativar - NAO DELETA DO BANCO, APENAS INATIVA PACIENTE
-//            pedido.setAtivoInativo(EnumAtivoInativo.INATIVO.getCodigo());
-//            this.pedidoRepository.save(pedido);
             // deletar - DELETA DO BANCO - comentar linha acima e descomentar linha abaixo
             this.pedidoRepository.delete(pedido);
         } catch (DefaultExceptionHandler e) {

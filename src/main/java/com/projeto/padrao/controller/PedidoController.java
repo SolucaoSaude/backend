@@ -15,8 +15,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @Controller
 @RequestMapping("/api/pedido")
 public class PedidoController extends BaseController {
@@ -36,6 +37,13 @@ public class PedidoController extends BaseController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<List<Pedido>> listarTodos() throws DefaultExceptionHandler {
         List<Pedido> pedidoList = this.pedidoService.listarTodos();
+        return ResponseEntity.ok(pedidoList);
+    }
+
+    @GetMapping("/listar/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Optional<Pedido>> listarPorId(@PathVariable(value = "id")Integer id) throws DefaultExceptionHandler {
+        Optional<Pedido> pedidoList = this.pedidoService.listarPorId(id);
         return ResponseEntity.ok(pedidoList);
     }
 

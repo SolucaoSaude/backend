@@ -12,4 +12,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("FROM Pedido p WHERE p.postoSaude like %:keyword% OR p.tipoConsulta like %:keyword% OR p.paciente.nome like %:keyword% OR p.paciente.cpf like %:keyword%")
     Page<Pedido> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+
+
 }
