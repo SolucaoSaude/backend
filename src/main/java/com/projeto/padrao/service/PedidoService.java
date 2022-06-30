@@ -80,8 +80,8 @@ public class PedidoService extends BaseService {
         try {
             pedido.getPostoSaude();
             pedido.setStatusPedido(EnumStatusPedido.MARCADA.getCodigo());
-//            pedido.setDataConsulta(pedidoDTO.getDataConsulta());
-            pedido.setDataConsulta(new Date());
+            pedido.setDataConsulta(pedidoDTO.getDataConsulta());
+//            pedido.setDataConsulta(new Date());
             pedido.getPaciente();
 
             return this.pedidoRepository.save(pedido);

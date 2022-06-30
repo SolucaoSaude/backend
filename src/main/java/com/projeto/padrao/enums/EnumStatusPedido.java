@@ -5,7 +5,7 @@ import lombok.Getter;
 public enum EnumStatusPedido {
 
     ABERTO ("PA", "PEDIDO ABERTO"),
-    MARCADA ("PM", "PEDIDO MARCADO"),
+    MARCADA ("CM", "CONSULTA MARCADO"),
     CANCELADA ("PC", "PEDIDO CANCELADO");
 
     @Getter

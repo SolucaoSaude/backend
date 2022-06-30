@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.Date;
