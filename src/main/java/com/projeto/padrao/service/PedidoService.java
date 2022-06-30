@@ -75,27 +75,14 @@ public class PedidoService extends BaseService {
             throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
                     "Operação inválida! O objeto tem que estar preenchido.");
         }
-        this.validarPedido(pedidoDTO);
+        Pedido pedido = pedidoRepository.buscarPedido(pedidoDTO.getId());
+
         try {
-//            Paciente paciente = pacienteRepository.findById(pedidoDTO.getPaciente().getId()).get();
-//            if (paciente == null) {
-//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-//                        "Operação inválida. O id do paciente informado não existe.");
-//            }
-//            if (paciente.getAtivoInativo() == "I" || paciente.getAtivoInativo() == null) {
-//                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
-//                        "Operação inválida. O paciente INATIVO não pode marcar consulta.");
-//            }
-            pedidoDTO.getPostoSaude();
-            pedidoDTO.setStatusPedido(EnumStatusPedido.MARCADA.getCodigo());
-            pedidoDTO.setDataPedido(pedidoDTO.getDataConsulta());
-//            if (StringUtils.isEmpty(pedidoDTO.getTipoConsulta())) {
-//                pedidoDTO.setTipoConsulta(EnumTipoConsulta.GERAL.getCodigo());
-//            } else {
-//                pedidoDTO.setTipoConsulta(pedidoDTO.getTipoConsulta());
-//            }
-            Pedido pedido = convertToModel(pedidoDTO, Pedido.class);
-//            pedido.setPaciente(paciente);
+            pedido.getPostoSaude();
+            pedido.setStatusPedido(EnumStatusPedido.MARCADA.getCodigo());
+//            pedido.setDataConsulta(pedidoDTO.getDataConsulta());
+            pedido.setDataConsulta(new Date());
+            pedido.getPaciente();
 
             return this.pedidoRepository.save(pedido);
         } catch (Exception e) {
@@ -116,6 +103,19 @@ public class PedidoService extends BaseService {
 
     public List<Pedido> listarTodos() throws DefaultExceptionHandler {
         List<Pedido> pedidoList = pedidoRepository.findAll();
+        if (!pedidoList.isEmpty() || pedidoList != null) {
+            try {
+                return pedidoList;
+            } catch (Exception e) {
+                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(), "Operação inválida! Erro leitura pedido.");
+            }
+        } else {
+            throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(), "Operação inválida! Lista vazia.");
+        }
+    }
+
+    public List<Pedido> listarTodosPorId(final Integer id) throws DefaultExceptionHandler {
+        List<Pedido> pedidoList = pedidoRepository.findAllById(id);
         if (!pedidoList.isEmpty() || pedidoList != null) {
             try {
                 return pedidoList;

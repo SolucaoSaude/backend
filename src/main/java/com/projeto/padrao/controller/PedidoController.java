@@ -40,6 +40,13 @@ public class PedidoController extends BaseController {
         return ResponseEntity.ok(pedidoList);
     }
 
+    @GetMapping("/listar-todos/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<List<Pedido>> listarTodosPorId(@Valid @PathVariable("id") Integer id) throws DefaultExceptionHandler {
+        List<Pedido> pedidoList = this.pedidoService.listarTodosPorId(id);
+        return ResponseEntity.ok(pedidoList);
+    }
+
     @GetMapping("/listar/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Optional<Pedido>> listarPorId(@PathVariable(value = "id")Integer id) throws DefaultExceptionHandler {
@@ -56,7 +63,7 @@ public class PedidoController extends BaseController {
     @PutMapping("/agendar")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<PedidoDTO> agendar(@Valid @RequestBody PedidoDTO pedidoDTO) throws DefaultExceptionHandler {
-        Pedido pedido = this.pedidoService.cadastrar(pedidoDTO);
+        Pedido pedido = this.pedidoService.agendar(pedidoDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId()).toUri();
         return ResponseEntity.created(location).body(super.convertTo(pedido, PedidoDTO.class));
     }

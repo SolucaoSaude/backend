@@ -201,11 +201,12 @@ public class PacienteService extends BaseService {
         try {
             Paciente paciente = this.consultarPorId(pacienteDTO.getId());
 
-            paciente.setCartaoSus(pacienteDTO.getCartaoSus().replaceAll("\\D", ""));
+            paciente.setNome(pacienteDTO.getNome());
+//            paciente.setCartaoSus(pacienteDTO.getCartaoSus().replaceAll("\\D", ""));
             paciente.setTelefone(pacienteDTO.getTelefone().replaceAll("\\D", ""));
             paciente.setDataNascimento(pacienteDTO.getDataNascimento());
 //            paciente.setDataNascimento(DateTimeUtils.formataData(pacienteDTO.getDataNascimentoFormatada(),"yyyy-MM-dd"));
-            paciente.setGenero(pacienteDTO.getGenero());
+            paciente.setGenero(pacienteDTO.getGenero().substring(0,1).toUpperCase());
             paciente.setUsername(pacienteDTO.getUsername());
             paciente.setEmail(pacienteDTO.getEmail());
 
