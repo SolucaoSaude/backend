@@ -119,6 +119,12 @@ public class PacienteService extends BaseService {
         if(StringUtils.isEmpty(request.getEmail().toLowerCase())){
             throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
                     "Operação inválida! O email do paciente não pode ser nulo.");
+        } else {
+            Paciente verifEmail = this.pacienteRepository.findByEmail(request.getEmail());
+            if (!ObjectUtils.isEmpty(verifEmail)) {
+                throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),
+                        "Operação inválida! Email já cadastrado no sistema.");
+            }
         }
         if(StringUtils.isEmpty(request.getSenha().toLowerCase())){
             throw new DefaultExceptionHandler(HttpStatus.BAD_REQUEST.value(),

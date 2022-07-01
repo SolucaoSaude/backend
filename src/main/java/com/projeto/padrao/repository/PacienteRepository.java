@@ -24,5 +24,8 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
 
     @Query("FROM Paciente p WHERE p.email LIKE %:email% AND p.senha LIKE %:senha%")
     Paciente findByEmailAndSenha(String email, String senha);
+
+    @Query("FROM Paciente p WHERE p.email LIKE %:email%")
+    Paciente findByEmail(String email);
 }
 
